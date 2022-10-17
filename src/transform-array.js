@@ -13,11 +13,46 @@ const { NotImplementedError } = require('../extensions/index.js');
  * transform([1, 2, 3, '--discard-prev', 4, 5]) => [1, 2, 4, 5]
  * 
  */
-function transform(/* arr */) {
-  throw new NotImplementedError('Not implemented');
-  // remove line with error and write your code here
+ function transform(arr) {
+  if (!Array.isArray(arr) || !arr instanceof Array) {
+    throw new Error("'arr' parameter must be an instance of the Array!");
+  }
+  if (!arr || arr.length == 0) return [];
+  let result = arr.slice();
+  if (arr.includes('--discard-next')) {
+    let index = result.findIndex(item => item === "--discard-next");
+    if (result.length < arr.length) {
+      result.splice(index, 1);
+      return result;
+    }
+    result[index + 1] ? result.splice(index, 2) : result.splice(index, 1);
+  }
+  if (arr.includes('--double-next')) {
+    let index = result.findIndex(item => item === "--double-next");
+    if (result.length < arr.length) {
+      result.splice(index, 1);
+      return result;
+    }
+    result[index + 1] ? result[index] = result[++index] : result.splice(index, 1);
+  }
+  if (arr.includes('--double-prev')) {
+    let index = result.findIndex(item => item === "--double-prev");
+    if (result.length < arr.length) {
+      result.splice(index, 1);
+      return result;
+    }
+    result[index - 1] ? result[index] = result[--index] : result.splice(index, 1);
+  }
+  if (arr.includes('--discard-prev')) {
+    let index = result.findIndex(item => item === "--discard-prev");
+    if (result.length < arr.length) {
+      result.splice(index, 1);
+      return result;
+    }
+    result[index - 1] ? result.splice(--index, 2) : result.splice(index, 1);
+  }
+  return result;
 }
-
 module.exports = {
   transform
 };
